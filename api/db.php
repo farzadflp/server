@@ -410,11 +410,11 @@ function notverified_parent_query() {
                 FROM
                     `User`
                 WHERE
-                    `id_school` = :id_school
+                    `id_school` = :id_school AND `role` = \"p\"
             ) AS myuser
             JOIN(
                 SELECT
-                    `id_user`,
+                    `id_user` AS id,
                     `child_name`,
                     `st_no_of_child`,
                     `verified_by_m`
@@ -424,7 +424,7 @@ function notverified_parent_query() {
                 `verified_by_m` = \"n\"
             ) AS myparent
             ON
-                myparent.id_user = myuser.id_user
+                myparent.id = myuser.id_user
           
     ";
     return $query;

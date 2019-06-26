@@ -1,7 +1,7 @@
 <?php
-include "api/auth.php";
-include_once "conf.php";
-include_once "post_params_methods.php";
+include '../api/auth.php';
+include_once '../api/post_params_methods.php';
+include_once '../api/conf.php';
 try {
 
     $sql = get_school_query();

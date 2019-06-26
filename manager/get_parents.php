@@ -1,7 +1,7 @@
 <?php
-include 'api/auth.php';
-include_once 'post_params_methods.php';
-include_once 'conf.php';
+include '../api/auth.php';
+include_once '../api/post_params_methods.php';
+include_once '../api/conf.php';
 check_for_previous_login($db_host, $db_name, $db_user, $db_pass, $username);
 if (is_user_loggen_in()) {
     try {
@@ -29,9 +29,11 @@ if (is_user_loggen_in()) {
                 $record['st_no_of_child'] = $row['st_no_of_child'];
                 $record['verified_by_m'] = $row['verified_by_m'];
                 $output[] = $record;
-                $output["success"] = true;
-                echo json_encode($output);
+
             }
+            $output['success'] = true;
+            echo json_encode($output);
+
         }
     } catch (PDOException $e) {
         echo "ERROR: " . $e->getMessage();

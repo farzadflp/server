@@ -1,5 +1,5 @@
 <?php
-include_once 'api/db.php';
+include_once 'db.php';
 $current_user = null;
 $current_user_id = null;
 

@@ -1,5 +1,5 @@
 <?php
-include_once 'conf.php';
+include_once 'api/conf.php';
 include 'api/auth.php';
 
 echo '<pre>';

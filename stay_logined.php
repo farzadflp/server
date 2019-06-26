@@ -1,7 +1,7 @@
 <?php
 include 'api/auth.php';
-include_once 'post_params_methods.php';
-include_once 'conf.php';
+include_once 'api/post_params_methods.php';
+include_once 'api/conf.php';
 check_for_previous_login($db_host, $db_name, $db_user, $db_pass, $username);
 if (is_user_loggen_in()) {
     try {

@@ -1,7 +1,7 @@
 <?php
-include 'api/auth.php';
-include_once "conf.php";
-include_once "post_params_methods.php";
+include '../api/auth.php';
+include_once '../api/post_params_methods.php';
+include_once '../api/conf.php';
 try {
     $sql = get_city_query();
     $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);

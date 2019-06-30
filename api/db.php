@@ -174,6 +174,72 @@ function community_login_query() {
     ";
     return $query;
 }
+function get_community_query() {
+    global $query;
+    $query = "
+            SELECT
+                *
+            FROM
+                (
+                SELECT
+                    `id_user`,
+                    `firstname`,
+                    `lastname`,
+                    `gender`,
+                    `username`
+                FROM
+                    `User`
+                WHERE
+                    `role` = \"c\" AND `id_school` = :id_school
+            ) AS myuser
+            JOIN(
+                SELECT
+                    `id_user`,
+                    `post`
+                FROM
+                    `Community`
+            ) AS mycommunity
+            ON
+                mycommunity.id_user = myuser.id_user
+            
+    ";
+    return $query;
+}
+function get_community_data_query() {
+    global $query;
+    $query = "
+            SELECT
+                *
+            FROM
+                (
+                SELECT
+                    `id_user`,
+                    `firstname`,
+                    `lastname`,
+                    `gender`,
+                    `phone_no`
+                FROM
+                    `User`
+                WHERE
+                    `role` = \"c\" AND `id_school` = 1
+            ) AS myuser
+            JOIN(
+                SELECT
+                    `id_user`,
+                    `post`,
+                    `degree`,
+                    `course`,
+                    `address_work`,
+                    `tel_work`
+                FROM
+                    `Community`
+            ) AS mycommunity
+            ON
+                mycommunity.id_user = myuser.id_user
+            
+    ";
+    return $query;
+}
 function get_msg_query() {
     global $query;
     $query = "
@@ -250,7 +316,7 @@ function parent_registration_query() {
                 ";
     return $query;
 }
-function community_registration_query() {
+function add_community_query() {
     global $query;
     $query = "
         START TRANSACTION
@@ -261,7 +327,10 @@ function community_registration_query() {
             `firstname`,
             `lastname`,
             `gender`,
-            `phone_no`
+            `phone_no`,
+            `id_school`,
+            `role`,
+            `verified`
         )
         VALUES(
             :username,
@@ -269,15 +338,17 @@ function community_registration_query() {
             :firstname,
             :lastname,
             :gender,
-            :phone_no
+            :phone_no,
+            :id_school,
+            :role,
+            :verified
         );
         INSERT INTO `Community`(
             `id_user`,
             `post`,
             `degree`,
             `course`,
-            `address`,
-            `tel`,
+            `tel_work`,
             `address_work`
         )
         VALUES(
@@ -285,8 +356,7 @@ function community_registration_query() {
             :post,
             :degree,
             :course,
-            :address,
-            :tel,
+            :tel_work,
             :address_work);
         COMMIT
             ;
@@ -393,7 +463,19 @@ function notverified_parent_query() {
     global $query;
     $query = "
             SELECT
-                *
+                `id_user`,
+                    `id_school`,
+                    `role`,
+                    `username`,
+                    `password`,
+                    `firstname`,
+                    `lastname`,
+                    `gender`,
+                    `phone_no`,
+                    `verified`,
+                    `child_name`,
+                    `st_no_of_child`,
+                    `verified_by_m`
             FROM
                 (
                 SELECT
@@ -458,6 +540,20 @@ function get_school_query() {
     ";
     return $query;
 }
+
+function add_msg_query() {
+    global $query;
+    $query = "
+            INSERT INTO `Message`(`id_user`, `id_conversation`, `msg`)
+            VALUES(
+                :id_user,
+                :id_conversation,
+                :msg
+            );
+    ";
+    return $query;
+}
+
 
 
 

@@ -5,33 +5,32 @@ include_once '../api/conf.php';
 check_for_previous_login($db_host, $db_name, $db_user, $db_pass, $username);
 if (is_user_loggen_in()) {
     try {
-        $sql = notverified_parent_query();
+        $sql = add_community_query();
         $user = get_current_user_data();
         if ($user['role'] == "m") {
             $conn = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id_school', get_input1("id_school"));
+            $verified = 1;
+            $stmt->bindParam(':firstname', get_input1('firstname'));
+            $stmt->bindParam(':lastname', get_input1('lastname'));
+            $stmt->bindParam(':gender', get_input1('gender'));
+            $stmt->bindParam(':username', get_input1('username'));
+            $stmt->bindParam(':password', get_input1('password'));
+            $stmt->bindParam(':phone_no', get_input1('phone_no'));
+            $stmt->bindParam(':role', get_input1('role'));
+            $stmt->bindParam(':id_school', get_input1('id_school'));
+            $stmt->bindParam(':degree', get_input1('degree'));
+            $stmt->bindParam(':course', get_input1('course'));
+            $stmt->bindParam(':post', get_input1('post'));
+            $stmt->bindParam(':tel_work', get_input1('tel_work'));
+            $stmt->bindParam(':address_work', get_input1('address_work'));
+            $stmt->bindParam(':verified', $verified);
             $stmt->execute();
             $output = array();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $record = array();
-                $record['id_user'] = $row['id_user'];
-                $record['id_school'] = $row['id_school'];
-                $record['firstname'] = $row['firstname'];
-                $record['lastname'] = $row['lastname'];
-                $record['gender'] = $row['gender'];
-                $record['role'] = $row['role'];
-                $record['username'] = $row['username'];
-                $record['phone_no'] = $row['phone_no'];
-                $record['verified'] = $row['verified'];
-                $record['child_name'] = $row['child_name'];
-                $record['st_no_of_child'] = $row['st_no_of_child'];
-                $record['verified_by_m'] = $row['verified_by_m'];
-                $output[] = $record;
-                $output["success"] = true;
-                echo json_encode($output);
-            }
+            $output["success"] = true;
+            echo json_encode($output);
+
         }
     } catch (PDOException $e) {
         echo "ERROR: " . $e->getMessage();

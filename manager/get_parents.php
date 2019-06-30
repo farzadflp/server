@@ -31,7 +31,11 @@ if (is_user_loggen_in()) {
                 $output[] = $record;
 
             }
-            $output['success'] = true;
+            if ($output != null) {
+                $output['success'] = true;
+            } else{
+                $output['success'] = false;
+            }
             echo json_encode($output);
 
         }

@@ -154,7 +154,8 @@ function community_login_query() {
                 `lastname`,
                 `gender`,
                 `phone_no`,
-                `verified`
+                `verified`,
+                `id_school`
             FROM
                 `User`
             WHERE
@@ -165,7 +166,9 @@ function community_login_query() {
                 `id_user`,
                 `post`,
                 `degree`,
-                `course`
+                `course`,
+                `tel_work`,
+                `address_work`
             FROM
                 `Community`
         ) AS mycommunity
@@ -202,6 +205,38 @@ function get_community_query() {
             ON
                 mycommunity.id_user = myuser.id_user
             
+    ";
+    return $query;
+}
+
+function edit_community_query() {
+    global $query;
+    $query = "
+            START TRANSACTION
+                ;
+            UPDATE
+                `User`
+            SET
+                `firstname` = :firstname,
+                `lastname` = :lastname,
+                `gender` = :gender,
+                `phone_no` = :phone_no
+            WHERE
+                `id_user` = :id_user
+                ;
+            UPDATE
+                `Community`
+            SET
+                `post` = :post,
+                `degree` = :degree,
+                `course` = :course,
+                `address_work` = :address_work,
+                `tel_work` = :tel_work
+            WHERE
+                `id_user` = :id_user
+                ;
+            COMMIT
+                ;
     ";
     return $query;
 }
@@ -380,6 +415,10 @@ function user_exist_query() {
 function inbox_query() {
     global $query;
     $query = "
+    SELECT
+        *
+    FROM
+        (
         SELECT
             id_two,
             username_two,
@@ -395,31 +434,75 @@ function inbox_query() {
             FROM
                 `User`
         ) AS tempuser
-        JOIN(
+    JOIN(
+        SELECT
+            Conversation.id_conversation,
+            Conversation.topic,
+            Conversation.date_time_conv,
+            Conversation.id_user_two,
+            Conversation.category
+        FROM
+            `Conversation`
+        WHERE
+            `id_user_one` IN(
             SELECT
-                Conversation.id_conversation,
-                Conversation.topic,
-                Conversation.date_time_conv,
-                Conversation.id_user_two,
-                Conversation.category
+                `id_user`
             FROM
-                `Conversation`
+                `User`
             WHERE
-                `id_user_one` IN(
-                SELECT
-                    `id_user`
-                FROM
-                    `User`
-                WHERE
-                    username = :username
-            )
-        ) AS tempconv
-        ON
-            tempuser.id_two = tempconv.id_user_two
-        ORDER BY
-            `date_time_conv`
-        DESC
+                username = :username
+        )
+    ) AS tempconv
+    ON
+        tempuser.id_two = tempconv.id_user_two
+    ) AS inbox_one
+    UNION ALL
+SELECT
+        *
+    FROM
+        (
+        SELECT
+            id_one,
+            username_one,
+            `id_conversation`,
+            `topic`,
+            `date_time_conv`,
+            `category`
+        FROM
+            (
+            SELECT
+                USER.id_user AS id_one,
+                USER.username AS username_one
+            FROM
+                `User`
+        ) AS tempuser
+    JOIN(
+        SELECT
+            Conversation.id_conversation,
+            Conversation.topic,
+            Conversation.date_time_conv,
+            Conversation.id_user_one,
+            Conversation.category
+        FROM
+            `Conversation`
+        WHERE
+            `id_user_two` IN(
+            SELECT
+                `id_user`
+            FROM
+                `User`
+            WHERE
+                username = :username
+        )
+    ) AS tempconv
+    ON
+        tempuser.id_one = tempconv.id_user_one
+    ) AS inbox_two
+    ORDER BY
+        `date_time_conv`
+    DESC
     
+
     ";
     return $query;
 }

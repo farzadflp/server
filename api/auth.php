@@ -117,8 +117,6 @@ function login_db(string $db_host, string $db_name, string $db_user, string $db_
                 $record['post'] = $row['post'];
                 $record['degree'] = $row['degree'];
                 $record['course'] = $row['course'];
-                $record['address'] = $row['address'];
-                $record['tel'] = $row['tel'];
                 $record['address_work'] = $row['address_work'];
                 $record['tel_work'] = $row['tel_work'];
             } else if ($role == "m"){
